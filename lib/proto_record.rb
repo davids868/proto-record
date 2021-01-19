@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "proto_record/version"
-
 module ProtoRecord
-  class Error < StandardError; end
-  # Your code goes here...
+  require "proto_record/errors"
+  require "proto_record/version"
+  require "proto_record/proto_record"
 end
