@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PointType < ActiveRecord::Type::Value
   def type
     :json
@@ -9,7 +11,11 @@ class PointType < ActiveRecord::Type::Value
 
   def deserialize(value)
     if value.is_a?(String)
-      decoded = ::ActiveSupport::JSON.decode(value) rescue nil
+      decoded = begin
+                  ::ActiveSupport::JSON.decode(value)
+                rescue StandardError
+                  nil
+                end
       Point.new(x: decoded["x"], y: decoded["y"]) if decoded
     else
       super

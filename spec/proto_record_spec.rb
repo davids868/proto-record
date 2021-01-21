@@ -19,7 +19,7 @@ describe ProtoRecord do
     end
 
     context "when included" do
-      before { Path.include(ProtoRecord)  }
+      before { Path.include(ProtoRecord) }
 
       it "should define proto_message on the class" do
         expect(Path).to respond_to(:proto_message)
@@ -32,7 +32,7 @@ describe ProtoRecord do
   end
 
   describe "proto_message" do
-    before { Path.include(ProtoRecord)  }
+    before { Path.include(ProtoRecord) }
 
     context "when not defined" do
       it "should not have a proto_message" do
@@ -40,7 +40,7 @@ describe ProtoRecord do
       end
 
       it "should raise an error when calling to_proto on an instance" do
-        expect{ Path.new.to_proto }.to raise_error(ProtoRecord::MissingProtoMessage)
+        expect { Path.new.to_proto }.to raise_error(ProtoRecord::MissingProtoMessage)
       end
     end
 
@@ -58,7 +58,7 @@ describe ProtoRecord do
       end
 
       it "should not raise an error when calling to_proto on an instance" do
-        expect{ Path.new.to_proto }.not_to raise_error
+        expect { Path.new.to_proto }.not_to raise_error
       end
 
       it "should return an empty hash when not provided" do
@@ -89,9 +89,9 @@ describe ProtoRecord do
     let(:feature) { Feature.new(feature_args) }
     let(:point) { Point.new(**point_args) }
 
-    before { Path.include(ProtoRecord)  }
-    before { Feature.include(ProtoRecord)  }
-    before { Point.include(ProtoRecord)  }
+    before { Path.include(ProtoRecord) }
+    before { Feature.include(ProtoRecord) }
+    before { Point.include(ProtoRecord) }
 
     before { Path.proto_message(path_proto_message) }
     before { Feature.proto_message(feature_proto_message) }

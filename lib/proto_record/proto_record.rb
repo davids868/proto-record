@@ -17,9 +17,7 @@ module ProtoRecord
         self.proto_message_fields = @proto_message.new.to_h.keys.map(&:to_s)
       end
 
-      if @proto_message.nil? && superclass.respond_to?(:proto_message)
-        @proto_message ||= superclass.proto_message
-      end
+      @proto_message ||= superclass.proto_message if @proto_message.nil? && superclass.respond_to?(:proto_message)
 
       @proto_message
     end
@@ -35,6 +33,7 @@ module ProtoRecord
 
   def to_proto
     raise MissingProtoMessage, self.class.name if proto_message.nil?
+
     message_args = is_a?(ActiveRecord::Base) ? resolve_active_record_object : resolve_class_object
 
     message_args = transform_date_values(message_args)

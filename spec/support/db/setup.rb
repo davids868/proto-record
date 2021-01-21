@@ -26,7 +26,6 @@ ActiveRecord::Schema.define(version: 0) do
     t.bigint :path_id
     t.json :point
 
-
     t.timestamps
   end
 end
