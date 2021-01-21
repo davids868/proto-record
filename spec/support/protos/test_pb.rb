@@ -3,13 +3,14 @@
 
 require 'google/protobuf'
 
+require 'google/protobuf/timestamp_pb'
 Google::Protobuf::DescriptorPool.generated_pool.build do
   add_file("test.proto", :syntax => :proto3) do
     add_message "PointMessage" do
       optional :x, :int32, 1
       optional :y, :int32, 2
     end
-    add_message "FeautureMessage" do
+    add_message "FeatureMessage" do
       optional :name, :string, 1
       optional :point, :message, 2, "PointMessage"
       repeated :points, :message, 3, "PointMessage"
@@ -17,11 +18,16 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     add_message "PathMessage" do
       optional :name, :string, 1
       optional :description, :string, 2
-      repeated :features, :message, 3, "FeautureMessage"
+      repeated :features, :message, 3, "FeatureMessage"
+    end
+    add_message "PathWithTimestampsMessage" do
+      optional :name, :string, 1
+      optional :created_at, :message, 2, "google.protobuf.Timestamp"
     end
   end
 end
 
 PointMessage = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("PointMessage").msgclass
-FeautureMessage = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("FeautureMessage").msgclass
+FeatureMessage = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("FeatureMessage").msgclass
 PathMessage = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("PathMessage").msgclass
+PathWithTimestampsMessage = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("PathWithTimestampsMessage").msgclass

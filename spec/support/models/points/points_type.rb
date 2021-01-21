@@ -6,7 +6,7 @@ class PointsType < ActiveRecord::Type::Value
   end
 
   def cast(value)
-    Points.new(value)
+    Points.new(**value) if value
   end
 
   def deserialize(value)
@@ -16,7 +16,7 @@ class PointsType < ActiveRecord::Type::Value
       rescue StandardError
         nil
       end
-      Points.new(decoded)
+      Points.new(points: decoded["points"].map { |p| Point.new(p.symbolize_keys) })
     else
       super
     end

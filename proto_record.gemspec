@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "rake", "~> 13.0"
 
-  spec.add_development_dependency "activerecord", "~> 6.1"
+  spec.add_development_dependency "activerecord", "~> 5.0"
   spec.add_development_dependency "grpc", "~> 1.35.0"
   spec.add_development_dependency "grpc-tools", "~> 1.35.0"
   spec.add_development_dependency "pry", "~> 0.13.1"

@@ -7,26 +7,26 @@ require "proto_record/errors"
 module ProtoRecord
   extend ActiveSupport::Concern
 
-  module ClassMethods
-    attr_writer :proto_message, :proto_options, :proto_message_fields
+  included do
+    class << self
+      def proto_message(message = nil, options = {})
+        unless message.nil?
+          @proto_message = message.to_s.classify.constantize
+          @proto_options = options
+        end
 
-    def proto_message(message = nil, options = {})
-      unless message.nil?
-        @proto_message = message.to_s.classify.constantize
-        self.proto_options = options
+        @proto_message ||= superclass.proto_message if @proto_message.nil? && superclass.respond_to?(:proto_message)
+
+        @proto_message
       end
 
-      @proto_message ||= superclass.proto_message if @proto_message.nil? && superclass.respond_to?(:proto_message)
+      def proto_options
+        @proto_options ||= {}
+      end
 
-      @proto_message
-    end
-
-    def proto_options
-      @proto_options ||= {}
-    end
-
-    def proto_message_fields
-      @proto_message_fields ||= @proto_message.new.to_h.keys.map(&:to_s)
+      def proto_message_fields
+        @proto_message_fields = @proto_message.new.to_h.keys.map(&:to_s)
+      end
     end
   end
 
@@ -61,36 +61,37 @@ module ProtoRecord
   end
 
   def resolve_active_record_object
-    intersecting_attributes = proto_fields & attribute_names
-    intersecting_associations = proto_fields - attribute_names
-
-    resolved_attributes = attributes.slice(*intersecting_attributes)
-    resolved_attributes = transform_special_attributes(resolved_attributes)
-    resolved_associations = intersecting_associations.map(&method(:resolve_association)).to_h
-
-    resolved_attributes.merge(resolved_associations)
+    proto_fields.map { |field| [field, resolve_field(field)] }.to_h
   end
 
-  def resolve_association(field)
-    res = try(field)
-    reflection = self.class.reflect_on_association(field)
+  def resolve_field(field)
+    value = try(field) || self[field]
 
-    unless reflection.nil? || res.nil?
-      res = reflection.collection? ? res.map(&:to_proto) : res.to_proto
+    return value if value.nil?
+
+    if reflection?(field)
+      collection?(field) ? value.map(&:to_proto) : value.to_proto
+    else
+      handle_special_fields(value)
     end
-
-    [field, res]
   end
 
-  def transform_special_attributes(attributes)
-    attributes.transform_values do |value|
-      if value.respond_to?(:to_proto)
-        value = value.to_proto
-      elsif value.respond_to?(:strftime)
-        value = value.to_time
-      end
+  def reflection?(field)
+    self.class.reflections.keys.include?(field)
+  end
 
-      value
-    end
+  def collection?(field)
+    self.class.reflect_on_association(field).collection?
+  end
+
+  def handle_special_fields(value)
+    return value.to_proto if value.respond_to?(:to_proto)
+    return value.to_time if value.respond_to?(:strftime)
+
+    value
+  end
+
+  def collection_association?(field)
+    self.class.reflect_on_association(field).try(:collection?)
   end
 end

@@ -78,15 +78,15 @@ describe ProtoRecord do
 
   describe "to_proto" do
     let(:path_proto_message) { PathMessage }
-    let(:feature_proto_message) { FeautureMessage }
+    let(:feature_proto_message) { FeatureMessage }
     let(:point_proto_message) { PointMessage }
     let(:point_proto_options) { { fields_resolver: :to_h } }
     let(:path_args) { { name: "Path to glory", description: "A very complicated path" } }
     let(:feature_args) { { name: "The feature" } }
     let(:point_args) { { x: 42, y: 13 } }
 
-    let(:path) { Path.new(path_args) }
-    let(:feature) { Feature.new(feature_args) }
+    let(:path) { Path.create(path_args) }
+    let(:feature) { Feature.create(feature_args) }
     let(:point) { Point.new(**point_args) }
 
     before { Path.include(ProtoRecord) }
@@ -110,7 +110,7 @@ describe ProtoRecord do
     context "resolving nested messgaes" do
       it "resolves associations and class attributes recursively" do
         feature.update_attribute(:point, point_args)
-        feature.points = [point]
+        feature.update_attribute(:points, { points: [point] })
         path.update_attribute(:features, [feature])
 
         point_message = point_proto_message.new(point_args)
@@ -118,6 +118,18 @@ describe ProtoRecord do
         path_message = path_proto_message.new(path_args.merge(features: [feature_message]))
 
         expect(path.to_proto).to eq(path_message)
+      end
+    end
+
+    context "resolving dates" do
+      let(:path_with_timestamp_message) { PathWithTimestampsMessage }
+
+      before { Path.proto_message(path_with_timestamp_message) }
+      after { Path.proto_message(path_proto_message) }
+
+      it "resolves the dates attributes correctly" do
+        path_with_timestamp_args = { name: path[:name], created_at: path[:created_at].to_time }
+        expect(path.to_proto).to eq(path_with_timestamp_message.new(path_with_timestamp_args))
       end
     end
 
@@ -134,7 +146,7 @@ describe ProtoRecord do
 
     context "resolving when to_proto defined without a message" do
       it "should return a resolved message based on to_proto implementation" do
-        points = Points.new([point])
+        points = Points.new(points: [point])
         expect(points.to_proto).to eq [point_proto_message.new(point_args)]
       end
     end
