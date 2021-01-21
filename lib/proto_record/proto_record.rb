@@ -14,7 +14,6 @@ module ProtoRecord
       unless message.nil?
         @proto_message = message.to_s.classify.constantize
         self.proto_options = options
-        self.proto_message_fields = @proto_message.new.to_h.keys.map(&:to_s)
       end
 
       @proto_message ||= superclass.proto_message if @proto_message.nil? && superclass.respond_to?(:proto_message)
@@ -27,7 +26,7 @@ module ProtoRecord
     end
 
     def proto_message_fields
-      @proto_message_fields ||= []
+      @proto_message_fields ||= @proto_message.new.to_h.keys.map(&:to_s)
     end
   end
 

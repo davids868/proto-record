@@ -12,6 +12,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     add_message "FeautureMessage" do
       optional :name, :string, 1
       optional :point, :message, 2, "PointMessage"
+      repeated :points, :message, 3, "PointMessage"
     end
     add_message "PathMessage" do
       optional :name, :string, 1

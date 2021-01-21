@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 0) do
     t.string :name
     t.bigint :path_id
     t.json :point
+    t.json :points
 
     t.timestamps
   end

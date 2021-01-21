@@ -9,6 +9,7 @@ message PointMessage {
 message FeautureMessage {
   string name = 1;
   PointMessage point = 2;
+  repeated PointMessage points = 3;
 }
 
 message PathMessage {

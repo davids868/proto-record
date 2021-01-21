@@ -110,10 +110,11 @@ describe ProtoRecord do
     context "resolving nested messgaes" do
       it "resolves associations and class attributes recursively" do
         feature.update_attribute(:point, point_args)
+        feature.points = [point]
         path.update_attribute(:features, [feature])
 
         point_message = point_proto_message.new(point_args)
-        feature_message = feature_proto_message.new(feature_args.merge(point: point_message))
+        feature_message = feature_proto_message.new(feature_args.merge(point: point_message, points: [point_message]))
         path_message = path_proto_message.new(path_args.merge(features: [feature_message]))
 
         expect(path.to_proto).to eq(path_message)
@@ -128,6 +129,13 @@ describe ProtoRecord do
       it "should throw an error if a regular class and fields_resolver is missing" do
         Point.proto_message(point_proto_message, {})
         expect { point.to_proto }.to raise_error(ProtoRecord::MissingFieldsResolver)
+      end
+    end
+
+    context "resolving when to_proto defined without a message" do
+      it "should return a resolved message based on to_proto implementation" do
+        points = Points.new([point])
+        expect(points.to_proto).to eq [point_proto_message.new(point_args)]
       end
     end
   end

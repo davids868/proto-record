@@ -5,4 +5,5 @@ class Feature < ActiveRecord::Base
 
   belongs_to :path
   attribute :point, PointType.new
+  attribute :points
 end
