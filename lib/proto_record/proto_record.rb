@@ -35,9 +35,6 @@ module ProtoRecord
 
     message_args = is_a?(ActiveRecord::Base) ? resolve_active_record_object : resolve_class_object
 
-    message_args = transform_date_values(message_args)
-    message_args = transform_class_attributes(message_args)
-
     proto_message.new(message_args)
   end
 
@@ -68,6 +65,7 @@ module ProtoRecord
     intersecting_associations = proto_fields - attribute_names
 
     resolved_attributes = attributes.slice(*intersecting_attributes)
+    resolved_attributes = transform_special_attributes(resolved_attributes)
     resolved_associations = intersecting_associations.map(&method(:resolve_association)).to_h
 
     resolved_attributes.merge(resolved_associations)
@@ -84,11 +82,15 @@ module ProtoRecord
     [field, res]
   end
 
-  def transform_class_attributes(hash)
-    hash.transform_values { |value| value.respond_to?(:to_proto) ? value.to_proto : value }
-  end
+  def transform_special_attributes(attributes)
+    attributes.transform_values do |value|
+      if value.respond_to?(:to_proto)
+        value = value.to_proto
+      elsif value.respond_to?(:strftime)
+        value = value.to_time
+      end
 
-  def transform_date_values(hash)
-    hash.transform_values { |value| value.respond_to?(:strftime) ? value.to_time : value }
+      value
+    end
   end
 end
