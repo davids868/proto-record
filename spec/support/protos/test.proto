@@ -1,0 +1,19 @@
+syntax = "proto3";
+/* import "google/protobuf/timestamp.proto"; */
+
+message PointMessage {
+  int32 x = 1;
+  int32 y = 2;
+}
+
+message FeautureMessage {
+  string name = 1;
+  PointMessage point = 2;
+}
+
+message PathMessage {
+  string name = 1;
+  string description = 2;
+  repeated FeautureMessage features = 3;
+}
+
