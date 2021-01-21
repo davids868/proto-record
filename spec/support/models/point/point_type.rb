@@ -12,10 +12,10 @@ class PointType < ActiveRecord::Type::Value
   def deserialize(value)
     if value.is_a?(String)
       decoded = begin
-                  ::ActiveSupport::JSON.decode(value)
-                rescue StandardError
-                  nil
-                end
+        ::ActiveSupport::JSON.decode(value)
+      rescue StandardError
+        nil
+      end
       Point.new(x: decoded["x"], y: decoded["y"]) if decoded
     else
       super

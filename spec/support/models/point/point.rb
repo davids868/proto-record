@@ -9,7 +9,7 @@ class Point
   end
 
   def valid?
-    @x.present? && @x.present?
+    @x.present? && @y.present?
   end
 
   def to_h
