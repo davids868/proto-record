@@ -30,6 +30,12 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "rake", "~> 13.0"
 
+  spec.add_development_dependency "activerecord", "~> 5.0"
+  spec.add_development_dependency "grpc", "~> 1.35.0"
+  spec.add_development_dependency "grpc-tools", "~> 1.35.0"
+  spec.add_development_dependency "pry", "~> 0.13.1"
+  spec.add_development_dependency "pry-byebug", "~> 3.9"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rubocop", "~> 1.7"
+  spec.add_development_dependency "sqlite3", "~> 1.4"
 end

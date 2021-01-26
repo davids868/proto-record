@@ -1,0 +1,25 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+message PointMessage {
+  int32 x = 1;
+  int32 y = 2;
+}
+
+message FeatureMessage {
+  string name = 1;
+  PointMessage point = 2;
+  repeated PointMessage points = 3;
+}
+
+message PathMessage {
+  string name = 1;
+  string description = 2;
+  repeated FeatureMessage features = 3;
+}
+
+message PathWithTimestampsMessage {
+  string name = 1;
+  google.protobuf.Timestamp created_at = 2;
+}
+

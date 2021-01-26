@@ -1,5 +1,7 @@
 AllCops:
   TargetRubyVersion: 2.4
+  Exclude:
+    - "spec/support/protos/**/*"
 
 Style/StringLiterals:
   Enabled: true
@@ -11,3 +13,14 @@ Style/StringLiteralsInInterpolation:
 
 Layout/LineLength:
   Max: 120
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"
+    - "*.gemspec"
