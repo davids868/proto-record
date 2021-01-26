@@ -134,8 +134,8 @@ message ObjectWithDateMessage {
 ```
 
 ## TODO
-- [] Support custom field transformation.
-- [] Add a `from_proto` for creating and updating records.
+- [ ] Support custom field transformation.
+- [ ] Add a `from_proto` for creating and updating records.
 
 ## Development
 
